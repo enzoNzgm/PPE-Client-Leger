@@ -1,0 +1,33 @@
+Objectif du projet:
+Site de revente de livre d'occassion entre particulier dans le style du boncoin.
+
+
+Contenu du projet:
+le site sera accessible a tous le monde mais contiendra une page de connexion et d'inscription pour la création d'annonce et 
+un espace personnelle, les membres aurront lz posssibilité de poster modifier et envoyer des messages aux annonces.
+
+
+Utilisateurs:
+Amateur de lecture : Passionné de lecture, cet utilisateur est toujours à la recherche de nouveaux livres à découvrir. Il 
+apprécie les échanges et la possibilité de trouver des trésors littéraires à des prix abordables.
+
+Étudiant : En quête de manuels scolaires ou de livres spécifiques pour ses études, cet utilisateur cherche des solutions 
+économiques pour se procurer les ouvrages nécessaires à sa formation.
+
+Collectionneur : Amateur de livres rares ou anciens, ce profil est à la recherche de pièces uniques pour enrichir sa collection
+ personnelle. Il apprécie la diversité des offres et les opportunités de trouver des éditions spéciales.
+
+Parent : Soucieux d'encourager la lecture chez ses enfants, ce profil cherche des livres pour enfants à des prix avantageux. Il
+ est également intéressé par la possibilité de revendre les livres déjà lus pour en acheter de nouveaux.
+
+Économe : Sensible aux bonnes affaires, cet utilisateur recherche des livres d'occasion à prix réduit pour faire des économies 
+tout en continuant à se cultiver. Il apprécie la simplicité et la praticité de trouver des livres à moindre coût.
+
+Vendeur occasionnel : Ayant des livres dont il n'a plus besoin, ce profil souhaite les revendre facilement et rapidement. Il 
+cherche une plateforme conviviale pour mettre en vente ses ouvrages et entrer en contact avec des acheteurs potentiels.
+
+Curieux : Intéressé par une variété de sujets, ce profil explore régulièrement les annonces pour découvrir de nouveaux livres 
+et élargir ses horizons. Il est ouvert à toutes sortes de genres et d'auteurs.
+
+Écologiste : Sensible à la préservation de l'environnement, cet utilisateur préfère acheter des livres d'occasion plutôt que 
+des exemplaires neufs, contribuant ainsi à réduire son empreinte écologique en favorisant la réutilisation des ressources.
