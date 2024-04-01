@@ -2,6 +2,10 @@
 session_start();
 include_once('config/PDO.php');
 
+if (!isset($_SESSION['email-logged'])) {
+    header('location: login.php');
+}
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $isbn = htmlspecialchars($_POST['isbn']);
     $prix = htmlspecialchars($_POST['prix']);
@@ -28,6 +32,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 return $bookInfo;
             } else {
                 return null;
+            }
+
+            $response = file_get_contents($apiUrl);
+
+            if ($response === false) {
+                $error = "Erreur lors de la requête vers l'API Google Books.";
+            } else {
+                $data = json_decode($response, true);
+
+                if (isset($data['items'][0]['volumeInfo'])) {
+                } else {
+                    $error = "Aucune information disponible pour cet ISBN.";
+                }
             }
         }
 
@@ -56,12 +73,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // Exécution de la requête
             try {
                 $stmt->execute();
-                echo "Livre ajouté avec succès.";
+                $error =  "Livre ajouté avec succès.";
             } catch (PDOException $e) {
-                echo 'Erreur lors de l\'exécution de la requête SQL : ' . $e->getMessage();
+                $error =  'Erreur lors de l\'exécution de la requête SQL : ' . $e->getMessage();
             }
         } else {
-            echo 'Aucune information disponible pour cet ISBN.';
+            $error =  'Aucune information disponible pour cet ISBN.';
         }
     }
 }
@@ -79,8 +96,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 <body>
     <?php include 'navbar.php' ?>
-    <?php include 'aside.php' ?>
-
     <div class="mb-12 mt-24 ml-80">
         <form method="post" action="" class="w-96 bg-white p-8 shadow-lg rounded-lg">
             <div class="mb-4">
@@ -95,6 +110,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <input type="submit" name="create_annonce" value="Créer l'annonce" class="bg-emerald-400 p-4 cursor-pointer">
             </div>
         </form>
+        <p class="text-red-700 text-lg my-2"><?php if (isset($error)) {
+                                                    echo $error;
+                                                } ?></p>
     </div>
 </body>
 

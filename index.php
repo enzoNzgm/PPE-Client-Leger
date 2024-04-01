@@ -17,6 +17,47 @@ try {
     echo "Erreur de requête : " . $e->getMessage(); // Afficher le message d'erreur
     exit(); // Arrêter l'exécution du script en cas d'erreur
 }
+
+//FILTRE
+
+$filtre = isset($_GET['filtre']) ? $_GET['filtre'] : '';
+
+function comparePrixCroissant($a, $b)
+{
+    return $a['prix'] - $b['prix'];
+}
+
+function comparePrixDecroissant($a, $b)
+{
+    return $b['prix'] - $a['prix'];
+}
+
+function compareTitreAZ($a, $b)
+{
+    return strcmp($a['titre'], $b['titre']);
+}
+
+function compareTitreZA($a, $b)
+{
+    return strcmp($b['titre'], $a['titre']);
+}
+
+switch ($filtre) {
+    case 'prixCroissant':
+        usort($annonces, 'comparePrixCroissant');
+        break;
+    case 'prixDecroissant':
+        usort($annonces, 'comparePrixDecroissant');
+        break;
+    case 'titreAZ':
+        usort($annonces, 'compareTitreAZ');
+        break;
+    case 'titreZA':
+        usort($annonces, 'compareTitreZA');
+        break;
+    default:
+        break;
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -29,31 +70,29 @@ try {
 </head>
 
 <body>
-    <!-- NAVBAR -->
     <header>
         <?php
         include('navbar.php')
         ?>
     </header>
-    <!-- FIN NAVBAR  -->
-    <!-- MAIN SECTION -->
     <section class="grid gap-20 grid-cols-4 mt-24">
-        <!-- ASIDE  -->
         <?php
         include('aside.php');
         ?>
-        <!-- MAIN PAGE -->
         <div class="col-span-4 mb-12 ml-80">
             <h1 class="my-6 text-4xl">Livres Disponibles</h1>
             <div class="text-end my-8 mx-6">
-                <label for="filtre">Trier par : </label>
-                <select name="filtre" id="filtre" class="border rounded-full">
-                    <option value="" selected></option>
-                    <option value="">Prix croissant</option>
-                    <option value="">Prix décroissant</option>
-                    <option value="">De A à Z</option>
-                    <option value="">De Z à A</option>
-                </select>
+                <form action="" method="GET" class="text-end my-8 mx-6">
+                    <label for="filtre">Trier par : </label>
+                    <select name="filtre" id="filtre" class="border rounded-full" onchange="this.form.submit()">
+                        <option value="" selected></option>
+                        <option value="prixCroissant">Prix croissant</option>
+                        <option value="prixDecroissant">Prix décroissant</option>
+                        <option value="titreAZ">De A à Z</option>
+                        <option value="titreZA">De Z à A</option>
+                    </select>
+                </form>
+
             </div>
             <div class="flex flex-wrap ">
                 <?php foreach ($annonces as $annonce) : ?>
@@ -62,7 +101,7 @@ try {
                             <img class="w-full rounded-lg object-cover object-center" style="height: 300px;" src="<?= $annonce['cover'] ?>" alt="product" />
                             <p class="mt-4 pl-4 font-bold text-center"><?= $annonce['titre'] ?></p>
                             <p class="mb-2 font-bold text-gray-500 text-center"><?= $annonce['auteur'] ?></p>
-                            <p class="mb-4 ml-4 text-xl font-semibold text-gray-800"><?= $annonce['prix'] ?></p>
+                            <p class="mb-4 ml-4 text-xl font-semibold text-gray-800"><?= $annonce['prix'] ?> €</p>
                         </div>
                     </a>
                 <?php endforeach; ?>
@@ -70,54 +109,8 @@ try {
 
         </div>
     </section>
-    <!-- FOOTER  -->
-    <footer class="ml-80 mr-6">
-        <hr class="mb-10 border-1 rounded">
-        <div class="my-2 mx-auto p-4">
-            <div class="mb-4">
-                <a href="#" class=" flex items-center">
-                    <img src="./images/notebook.png" alt="logo site" class="h-8 me-3 w-10">
-                    <span class="self-center text-2xl">LivreD'occaz</span>
-                </a>
-            </div>
-            <div class="grid grid-cols-3 gap-8">
-                <div class="">
-                    <h2 class="mb-6 text-lg font-semibold text-gray-900 uppercase ">RESSOURCES</h2>
-                    <ul class="text-gray-500">
-                        <li class="mb-4">
-                            <a href="#" class="text-base hover:underline">Link 1</a>
-                        </li>
-                        <li>
-                            <a href="#" class="text-base hover:underline">Link 2</a>
-                        </li>
-                    </ul>
-                </div>
-                <div class="">
-                    <h2 class="mb-6 text-lg font-semibold text-gray-900 uppercase ">FOLLOW US</h2>
-                    <ul class="text-gray-500">
-                        <li class="mb-4">
-                            <a href="#" class="text-base hover:underline">Link 1</a>
-                        </li>
-                        <li>
-                            <a href="#" class="text-base hover:underline">Link 2</a>
-                        </li>
-                    </ul>
-                </div>
-                <div class="">
-                    <h2 class="mb-6 text-lg font-semibold text-gray-900 uppercase ">LEGAL</h2>
-                    <ul class="text-gray-500">
-                        <li class="mb-4">
-                            <a href="#" class="text-base hover:underline">Link 1</a>
-                        </li>
-                        <li>
-                            <a href="#" class="text-base hover:underline">Link 2</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </footer>
-
+    <hr class="mb-10 ml-80 border-1 rounded">
+    <?php include("footer.php") ?>
 </body>
 
 </html>

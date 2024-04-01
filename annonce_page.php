@@ -1,3 +1,36 @@
+<?php
+session_start();
+include_once("config/PDO.php");
+
+if (!empty($_GET['id_annonce'])) {
+    $id_annonce = $_GET['id_annonce'];
+
+    $stmt = $conn->prepare("SELECT * FROM annonces a
+    INNER JOIN users u ON u.id_user = a.id_user
+    WHERE id_annonce = ?");
+
+    $stmt->execute([$id_annonce]);
+
+    if ($stmt->rowCount() == 1) {
+        $data = $stmt->fetch();
+
+        $cover = $data['cover'];
+        $titre = $data['titre'];
+        $auteur = $data['auteur'];
+        $description = $data['description'];
+        $editeur = $data['editeur'];
+        $categorie = $data['categorie'];
+        $pages = $data['pages'];
+        $isbn = $data['isbn'];
+        $date = $data['date'];
+        $prix = $data['prix'];
+    } else {
+        $error = "Cette annonce n'existe pas ou a été supprimée";
+    }
+} else {
+    header('location: index.php');
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -14,38 +47,40 @@
         include('navbar.php')
         ?>
     </header>
-    <section class="grid gap-20 grid-cols-4 mt-24">
+    <section id="annonce" class="grid gap-20 grid-cols-4 mt-24">
         <?php
         include('aside.php');
         ?>
-        <section class="flex col-span-4 mx-80 mt-24">
-            <div class="mr-4">
-                <img src="images/test.jpg" alt="couverture du livre" class="shadow w-96">
+        <section class="flex justify-center col-span-4 mx-80 mt-24">
+            <div class=" mr-4">
+                <?php
+                if (!empty($cover)) {
+                    echo '<img class="shadow " src="' . $cover . '" style="width: 500px;" alt="product" />';
+                } else {
+                    echo '<img src="images/test.jpg" alt="couverture du livre" class="shadow w-96">';
+                }
+                ?>
             </div>
             <div>
-                <h1 class="text-2xl font-bold">Titre du livre</h1>
-                <h2 class="text-lg text-emerald-400 mb-2">Auteur</h2>
+                <h1 class="text-2xl font-bold"><?= $titre ?></h1>
+                <h2 class="text-lg text-emerald-400 mb-2"><?= $auteur ?></h2>
                 <h2 class="font-semibold text-xl">Résumé</h2>
-                <p class="w-1/2 mb-4">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Neque, numquam. Aliquid
-                    rem
-                    facere dolorem
-                    veritatis repellat omnis molestias odit possimus, cum dicta labore, velit excepturi ullam voluptatum
-                    minima accusantium ut doloribus, atque quia id animi quo sunt at! Unde, recusandae.</p>
+                <p class=" mb-4"><?= $description ?></p>
                 <h2 class="font-semibold text-xl mb-2">Caractéristiques</h2>
                 <div class="flex">
                     <table class="mr-1 ">
                         <tbody>
                             <tr class="bg-slate-200">
                                 <td class="pr-32">Edition</td>
-                                <td class="pr-32">Pocket</td>
+                                <td class="mr-32"><?= $editeur ?></td>
                             </tr>
                             <tr>
-                                <td clas="pr-32">Auteur</td>
-                                <td class="pr-32">nom</td>
+                                <td class="pr-32">Auteur</td>
+                                <td class="mr-32"><?= $auteur ?></td>
                             </tr>
                             <tr class="bg-slate-200">
-                                <td class="pr-32">Page</td>
-                                <td class="pr-32">nb</td>
+                                <td class="pr-32">Pages</td>
+                                <td class="mr-32"><?= $pages ?></td>
                             </tr>
                         </tbody>
                     </table>
@@ -53,20 +88,20 @@
                         <tbody>
                             <tr class="bg-slate-200">
                                 <td class="pr-32">ISBN</td>
-                                <td class="pr-32">Numero</td>
+                                <td class="mr-32"><?= $isbn ?></td>
                             </tr>
                             <tr>
                                 <td clas="pr-32">Date</td>
-                                <td class="pr-32">Date</td>
+                                <td class="mr-32"><?= $date ?></td>
                             </tr>
                             <tr class="bg-slate-200">
                                 <td class="pr-32">Dimension</td>
-                                <td class="pr-32">20x32</td>
+                                <td class="mr-32">20x32</td>
                             </tr>
                         </tbody>
                     </table>
-
                 </div>
+                <a href="panier.php?id_annonce=<?= $id_annonce ?>" class="cursor-pointer my-6 bg-emerald-400 px-3 py-2  rounded-full  text-white font-bold border-2 border-emerald-800 transform transition-transform duration-300 hover:bg-white hover:text-emerald-400 hover:scale-105 inline-block">Ajouter au panier (<?= $prix ?>€)</a>
             </div>
         </section>
     </section>
