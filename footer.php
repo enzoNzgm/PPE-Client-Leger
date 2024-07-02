@@ -1,3 +1,4 @@
+<!-- le bas de page du site -->
 <footer class="ml-80 mr-6">
     <div class="my-2 mx-auto p-4">
         <div class="mb-4">

@@ -2,18 +2,23 @@
 session_start();
 include_once('config/PDO.php');
 
+// Si l'utilisateur n'est pas connecté, le rediriger vers la page de connexion
 if (!isset($_SESSION['email-logged'])) {
     header('location: login.php');
 }
 
+//si la méthode de requête est POST alors : 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    //récupérer les données du formulaire
     $isbn = htmlspecialchars($_POST['isbn']);
     $prix = htmlspecialchars($_POST['prix']);
     $id_user = $_SESSION['user_id-logged'];
 
+    //si les champs ne sont pas vides alors :
     if (empty($isbn) || empty($prix)) {
         echo "Veuillez remplir tous les champs.";
     } else {
+        //fonction pour récupérer les informations du livre grace à l'API Google Books
         function getBookInfo($isbn)
         {
             $apiUrl = 'https://www.googleapis.com/books/v1/volumes?q=isbn:' . $isbn;
@@ -34,11 +39,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 return null;
             }
 
+            // fonction utilisée pour récupérer le contenu de l'API Google Books
             $response = file_get_contents($apiUrl);
 
+            // si la réponse est fausse alors :
             if ($response === false) {
                 $error = "Erreur lors de la requête vers l'API Google Books.";
             } else {
+                //décoder la réponse en JSON
                 $data = json_decode($response, true);
 
                 if (isset($data['items'][0]['volumeInfo'])) {
@@ -52,7 +60,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         if ($bookInfo) {
             // Requête SQL avec des paramètres nommés
-            $req = "INSERT INTO `annonces` (`cover`, `titre`, `auteur`, `description`, `editeur`, `categorie`, `pages`, `isbn`, `date`,  `prix`, `id_user`) VALUES (:cover, :titre, :auteur, :description, :editeur, :categorie, :pages, :isbn, :date, :prix, :id_user)";
+            $req = "INSERT INTO `annonces` (`cover`, `titre`, `auteur`, `description`, `editeur`, `categorie`, `pages`, `isbn`, `date`,  `prix`, `id_user`) 
+                    VALUES (:cover, :titre, :auteur, :description, :editeur, :categorie, :pages, :isbn, :date, :prix, :id_user)";
 
             // Préparation de la requête
             $stmt = $conn->prepare($req);
@@ -73,7 +82,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // Exécution de la requête
             try {
                 $stmt->execute();
-                $error =  "Livre ajouté avec succès.";
+                header("location:index.php");
             } catch (PDOException $e) {
                 $error =  'Erreur lors de l\'exécution de la requête SQL : ' . $e->getMessage();
             }
@@ -96,24 +105,28 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 <body>
     <?php include 'navbar.php' ?>
-    <div class="mb-12 mt-24 ml-80">
-        <form method="post" action="" class="w-96 bg-white p-8 shadow-lg rounded-lg">
-            <div class="mb-4">
-                <label for="isbn">Quel est l'ISBN de votre livre ?</label>
-                <input type="text" name="isbn" id="isbn" class="mt-1 w-full border border-emerald-400 shadow-sm">
-            </div>
-            <div class="mb-4">
-                <label for="prix">Prix de ventede votre livre :</label>
-                <input type="number" name="prix" id="prix" class="mt-1 w-full border border-emerald-400 shadow-sm">
-            </div>
-            <div class="mt-6">
-                <input type="submit" name="create_annonce" value="Créer l'annonce" class="bg-emerald-400 p-4 cursor-pointer">
-            </div>
-        </form>
-        <p class="text-red-700 text-lg my-2"><?php if (isset($error)) {
-                                                    echo $error;
-                                                } ?></p>
-    </div>
+    <section class="flex justify-center">
+        <div class="mb-12 mt-32 text-center">
+            <form method="post" action="" class="w-96 bg-white p-8 shadow-lg rounded-lg">
+                <div class="mb-4">
+                    <label for="isbn">Quel est l'ISBN de votre livre ?</label>
+                    <input type="text" name="isbn" id="isbn" class="mt-1 w-full border border-emerald-400 shadow-sm">
+                </div>
+                <div class="mb-4">
+                    <label for="prix">Prix de vente de votre livre :</label>
+                    <input type="number" name="prix" id="prix" class="mt-1 w-full border border-emerald-400 shadow-sm">
+                </div>
+                <div class="mt-6">
+                    <input type="submit" name="create_annonce" value="Créer l'annonce" class="bg-emerald-400 p-4 cursor-pointer">
+                </div>
+            </form>
+            <p class="text-red-700 text-lg my-2"><?php if (isset($error)) {
+                                                        echo $error;
+                                                    } ?></p>
+        </div>
+    </section>
+    <hr class="mb-10 mx-6 border-1 rounded">
+    <?php include("footer.php") ?>
 </body>
 
 </html>

@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-// Vérification de la session panier
+// Vérification que la session panier existe sinon on la crée
 if (!isset($_SESSION['panier'])) {
     $_SESSION['panier'] = [];
 }

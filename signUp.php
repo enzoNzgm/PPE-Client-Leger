@@ -2,21 +2,24 @@
 session_start();
 include_once('config/PDO.php');
 
+// Si le formulaire d'inscription est soumis :
 if (isset($_POST['inscription'])) {
-
+    // Récupération des données du formulaire
     $username = htmlspecialchars($_POST['nom']);
     $email = htmlspecialchars($_POST['email']);
     $password = $_POST['password'];
     $verifPassword = $_POST['password2'];
-    //password hash
+
+    //Vérification si l'émail n'est pas déja utilisé
     $emailcheck = $conn->prepare('SELECT * FROM users WHERE email = ?');
     $emailcheck->execute([$email]);
 
+    // Si l'émail n'est pas utilisé et que les mots de passe sont similaires, on hash le mot de passe et on inscrit l'utilisateur
     if ($emailcheck->rowCount() == 0) {
         if ($password == $verifPassword) {
-            $password = password_hash($password, PASSWORD_DEFAULT);
+            $password = password_hash($password, PASSWORD_DEFAULT); //si émail pas utilisé et mdp = verifmdp hasher mdp
             $stmt = $conn->prepare('INSERT INTO `users`(`username`, `email`, `password`) VALUES (?, ?, ?)');
-            $stmt->execute([$username, $email, $password]);
+            $stmt->execute([$username, $email, $password,]);
 
             header('location: login.php');
         } else {

@@ -2,29 +2,38 @@
 session_start();
 include_once('config/PDO.php');
 
+// Si le formulaire est soumis
 if (isset($_POST['connexion'])) {
+    // Récupérer les données du formulaire
     $email = htmlspecialchars($_POST['email']);
     $password = $_POST['password'];
 
+    // Requête SQL pour récupérer l'utilisateur en fonction de l'email
     $stmt = $conn->prepare("SELECT * FROM `users` WHERE email = ?");
     $stmt->execute([$email]);
 
+    // Récupérer les données de l'utilisateur
     $data = $stmt->fetch();
 
     $id_user = $data['id_user'];
     $username = $data['username'];
     $password_hash = $data['password'];
-
+    //creation $isAdmin
+    $isAdmin = $data['admin'];
+    // Vérifier si le mot de passe est correct
     if (password_verify($password, $password_hash)) {
         $_SESSION['user_id-logged'] = $id_user;
         $_SESSION['email-logged'] = $email;
         $_SESSION['username-logged'] = $username;
+        //ajout de la variable de session isAdmin
+        $_SESSION['admin'] = $isAdmin;
         header("location: index.php");
     } else {
         $error = "Identifiant ou mot de passe incorrect";
     }
 }
 
+// Rediriger l'utilisateur s'il est déjà connecté
 if (isset($_SESSION['email-logged'])) {
     header('location: index.php');
 }

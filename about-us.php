@@ -1,3 +1,4 @@
+<!-- page qui présente l'équipe de la plateforme de revente de livres et son but -->
 <!DOCTYPE html>
 <html lang="en">
 
@@ -12,10 +13,10 @@
     <?php include('navbar.php') ?>
 
     <section class="mt-24">
-        <div class="w-full h-0 overflow-hidden">
+        <div>
             <img src="./images/banner-qui-sommes-nous.jpg" alt="bannière" class="w-full h-auto">
         </div>
-        <div class="container mx-80 my-8">
+        <div class="container mx-3 my-8">
             <h2 class="text-2xl font-semibold mb-4 text-emerald-400">Qui sommes-nous ?</h2>
             <p class="leading-relaxed">
                 Notre Site de Revente de Livres est une plateforme en ligne qui permet aux particuliers de vendre
